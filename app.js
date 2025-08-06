@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,10 +6,9 @@ const Room = require('./models/Room');
 const bodyParser = require('body-parser');
 const User = require('./models/User');
 const Owner = require('./models/Owner');
-// const bcrypt = require('bcryptjs');
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -16,7 +16,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/room_rent', {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {
@@ -197,3 +197,4 @@ app.get("/search/:key", async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
