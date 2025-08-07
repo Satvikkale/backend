@@ -36,13 +36,45 @@ const connectDB = async () => {
 
 connectDB();
 
-// Routes
+//routes
 app.post('/api/addroom', async (req, res) => {
     try {
-        const room = new Room(req.body);
-        await room.save();
-        res.status(201).send(room);
+        console.log('Received room data with images:', {
+            hasImage: !!req.body.image,
+            hasImage2: !!req.body.image2,
+            hasImage3: !!req.body.image3,
+            imageLength: req.body.image ? req.body.image.length : 0,
+            image2Length: req.body.image2 ? req.body.image2.length : 0,
+            image3Length: req.body.image3 ? req.body.image3.length : 0
+        }); // Debug log
+        
+        const roomData = {
+            image: req.body.image || '',
+            image2: req.body.image2 || '',
+            image3: req.body.image3 || '',
+            status: req.body.status,
+            ownerName: req.body.ownerName,
+            price: req.body.price,
+            mobileNumber: req.body.mobileNumber,
+            location: req.body.location,
+            address: req.body.address,
+            facilities: req.body.facilities,
+            discription: req.body.discription
+        };
+        
+        const room = new Room(roomData);
+        const savedRoom = await room.save();
+        
+        console.log('Room saved successfully with images:', {
+            roomId: savedRoom._id,
+            hasImage: !!savedRoom.image,
+            hasImage2: !!savedRoom.image2,
+            hasImage3: !!savedRoom.image3
+        }); // Debug log
+        
+        res.status(201).send(savedRoom);
     } catch (error) {
+        console.error('Error saving room:', error);
         res.status(400).send(error);
     }
 });
@@ -202,6 +234,8 @@ app.get("/search/:key", async (req, res) => {
 
     res.send(result);
 });
+
+
 
 
 
