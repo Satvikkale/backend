@@ -203,6 +203,10 @@ app.get("/search/:key", async (req, res) => {
     res.send(result);
 });
 
+app.get('/', async (req, res) => {
+    res.send("Hello");
+});
+
 
 
 app.listen(port, () => {
