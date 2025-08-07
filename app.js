@@ -12,29 +12,29 @@ const port = process.env.PORT || 5000;
 
 
 
-// Middleware
 app.use(cors({
-  origin: "https://room-rental-website-6zrh.onrender.com",
-  credentials: true
+    origin: 'https://room-rental-website-6zrh.onrender.com', // Frontend URL, not backend URL
+    credentials: true
 }));
-
-app.options('*', cors({
-  origin: "https://room-rental-website-6zrh.onrender.com",
-  credentials: true
-}));
-
 app.use(express.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('Connected to MongoDB');
-}).catch(err => {
-    console.error('Error connecting to MongoDB', err);
-});
+// MongoDB connection with better error handling
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error('Error connecting to MongoDB:', error.message);
+        console.log('Check your MongoDB Atlas connection string and network access settings');
+        process.exit(1);
+    }
+};
+
+connectDB();
 
 // Routes
 app.post('/api/addroom', async (req, res) => {
@@ -203,13 +203,8 @@ app.get("/search/:key", async (req, res) => {
     res.send(result);
 });
 
-app.get('/', async (req, res) => {
-    res.send("Hello");
-});
-
 
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-
