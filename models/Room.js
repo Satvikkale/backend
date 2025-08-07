@@ -1,8 +1,17 @@
-const mongoose = require('mongoose');``
+const mongoose = require('mongoose');
+
 const roomSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true
+    },
+    image2: {
+        type: String,
+        default: ''
+    },
+    image3: {
+        type: String,
+        default: ''
     },
     status: {
         type: Boolean,
@@ -12,7 +21,7 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    price:{
+    price: {
         type: String,
         required: true
     },
@@ -28,11 +37,20 @@ const roomSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    discription:{
+    facilities: {
+        type: String,
+        required: true
+    },
+    discription: {
         type: String,
         required: true
     }
 });
+
+roomSchema.methods.updateStatus = function(newStatus) {
+    this.status = newStatus;
+    return this.save();
+};
 
 const Room = mongoose.model('Room', roomSchema);
 
